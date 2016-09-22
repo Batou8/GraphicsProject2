@@ -33,7 +33,7 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
 
     if(key=='a') ; 
     if(key=='b') ; 
-    if(key=='c') P.resetOnCircle(P.nv);
+    if(key=='c') P.resetOnCircle(4);
     if(key=='d') ; 
     if(key=='e') ;
     if(key=='f') ;
@@ -73,7 +73,7 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
     if(key=='M') ;
     if(key=='N') ;
     if(key=='O') ;
-    if(key=='P') ; 
+    if(key=='P') state--; 
     if(key=='Q') exit();  // quit application
     if(key=='R') ; 
     if(key=='S') P.savePts("data/pts");    // save current positions of control points on file
@@ -144,6 +144,13 @@ void mousePressed()   // executed when the mouse is pressed
 void mouseReleased()   // executed when the mouse is pressed
   {
   if (keyPressed && key=='s' && state==1) B=Mouse(); 
+  //Plist[currentpts].cut();
+  if (keyPressed && key=='s' && state==1) {
+  Plist[currentpts].cut();
+  A.setTo(0,0);
+  B.setTo(0,0);
+  }
+  println("currentpts"+currentpts);
   change=true;    
   }
 
@@ -152,7 +159,7 @@ void mouseDragged() // executed when the mouse is dragged (while mouse buttom pr
   if (!keyPressed || (key=='a')|| (key=='i')) P.dragPicked();   // drag selected point with mouse
   if (keyPressed) {
       if (key=='.' && state==0) f+=2.*float(mouseX-pmouseX)/width;  // adjust current frame   
-      if (key=='t' && state==0) P.dragAll(); // move all vertices
+      if (key=='t' ) P.dragAll(); // move all vertices
       if (key=='r' && state==0) P.rotateAllAroundCentroid(Mouse(),Pmouse()); // turn all vertices around their center of mass
       if (key=='z' && state==0) P.scaleAllAroundCentroid(Mouse(),Pmouse()); // scale all vertices with respect to their center of mass
       }

@@ -5,6 +5,7 @@ import processing.pdf.*;    // to save screen shots as PDFs, does not always wor
 //**************************** global variables ****************************
 pts P = new pts(); // class containing array of points, used to standardize GUI
 pts[] Plist = new pts [99999];
+int currentpts;
 int PlistNum=0;
 float t=0, f=0;
 boolean animate=true, fill=false, timing=false;
@@ -44,14 +45,16 @@ void draw()      // executed at each frame
                 Plist[i].drawCurve(); 
                 Plist[i].IDs(); // shows polyloop with vertex labels
                 boolean goodSplit = Plist[i].splityBy(A,B,i);
-                if(goodSplit){pen(green,5);}
+                if(goodSplit){pen(green,5);
+                currentpts=i;
+                }
                 else{pen(red,7); }
                 arrow(A,B);            // defines line style wiht (5) and color (green) and draws starting arrow from A to B
             }
         }
         
       
-    }
+    }       
   
   
   if(recordingPDF) endRecordingPDF();  // end saving a .pdf file with the image of the canvas

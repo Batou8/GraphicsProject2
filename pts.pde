@@ -310,6 +310,8 @@ class pts
     
     pt piecept1;
     pt piecept2;
+    
+    
     boolean splityBy(pt A, pt B, int num){
       XG = new pt [maxnv];
       XGnum=0;
@@ -374,7 +376,15 @@ class pts
                   }
               }
         }
-        pts temppts=Plist[num];
+        
+        
+    return true;
+    
+    }
+    
+  void cut(){
+       int num=currentpts;
+       pts temppts=Plist[num];
         if(closept1.prevnum>closept2.prevnum){
             pt temppt=closept1;
             closept1=closept2;
@@ -390,8 +400,13 @@ class pts
         for(int i=0;i<=closept1.prevnum;i++){
             pts1.addPt(temppts.G[i]);
         }
-        pts1.addPt(closept1);
-        pts1.addPt(closept2);
+        pt newclosept1=new pt();
+        pt newclosept2=new pt();
+        newclosept1.setTo(closept1.x-5,closept1.y-5);
+        newclosept2.setTo(closept2.x-5,closept2.y-5);
+        
+        pts1.addPt(newclosept1);
+        pts1.addPt(newclosept2);
         if(closept2.nextnum!=0){
             for(int i=closept2.nextnum;i<nv-1;i++){
             pts1.addPt(temppts.G[i]);
@@ -406,17 +421,19 @@ class pts
         }
         else{
             pts2.addPt(closept1);
-            for(int i=closept1.nextnum;i<closept2.prevnum;i++){
-            pts2.addPt(temppts.G[i]);
-            println(temppts.G[i].nextnum);
+            
+            for(int i=closept1.nextnum;i<=closept2.prevnum;i++){
+                pts2.addPt(temppts.G[i]);
+                
             }
+            
             pts2.addPt(closept2);
         }
-        println(pts2.nv);
+        Plist[num]=pts1;
+        Plist[PlistNum]=pts2;
+        PlistNum++;
         
-    return true;
-    
-    }
+  }
     
   boolean checkarrow(pt[] XG, int XGnum,pt A,pt B){
         pt tempa;
