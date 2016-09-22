@@ -333,10 +333,12 @@ class pts
       }}
       XG=sortpts(XG,XGnum);
       if(!checkarrow(XG, XGnum, A, B)){
+        
       return false;
       }
       for(int i=0;i<XGnum;i=i+2){
         pen(white,7);
+        if(XG[i]==null || XG[i+1]==null || A==null){break;}
         if(XG[i].x<A.x && XG[i+1].x>A.x){
         closept1=XG[i];
         closept2=XG[i+1];
@@ -383,8 +385,12 @@ class pts
     }
     
   void cut(){
-       int num=currentpts;
-       pts temppts=Plist[num];
+       if(!cancut){return;}
+        int num=currentpts;
+        pts temppts=Plist[num];
+        if(closept1==null || closept2==null){
+        return;
+        }
         if(closept1.prevnum>closept2.prevnum){
             pt temppt=closept1;
             closept1=closept2;
@@ -402,14 +408,16 @@ class pts
         }
         pt newclosept1=new pt();
         pt newclosept2=new pt();
-        newclosept1.setTo(closept1.x-5,closept1.y-5);
-        newclosept2.setTo(closept2.x-5,closept2.y-5);
+        newclosept1.setTo(closept1.x,closept1.y);
+        newclosept2.setTo(closept2.x,closept2.y);
         
         pts1.addPt(newclosept1);
         pts1.addPt(newclosept2);
+        println("closept2.nextnum"+closept2.nextnum);
         if(closept2.nextnum!=0){
-            for(int i=closept2.nextnum;i<nv-1;i++){
-            pts1.addPt(temppts.G[i]);
+            for(int i=closept2.nextnum;i<nv;i++){
+                println("run");
+                pts1.addPt(temppts.G[i]);
             }
         }
         //println(pts1.nv);  //length of p1
@@ -429,12 +437,55 @@ class pts
             
             pts2.addPt(closept2);
         }
+        for(int i=0;i<pts1.nv;i++){
+           if(i!=0){
+                pts1.G[i].prevnum=i-1;
+                pts1.G[i].prev=pts1.G[i-1];
+           }
+           else{
+                pts1.G[i].prevnum=0;
+                pts1.G[i].prev=null;
+           }
+           if(i!=pts1.nv-1){
+                pts1.G[i].nextnum=i+1;
+                pts1.G[i].next=pts1.G[i+1];
+           }
+           else{
+                pts1.G[i].nextnum=0;
+                pts1.G[i].next=null;
+           }
+        }
+        
+        
+        for(int i=0;i<pts2.nv;i++){
+           if(i!=0){
+                pts2.G[i].prevnum=i-1;
+                pts2.G[i].prev=pts2.G[i-1];
+           }
+           else{
+                pts2.G[i].prevnum=0;
+                pts2.G[i].prev=null;
+           }
+           if(i!=pts2.nv-1){
+                pts2.G[i].nextnum=i+1;
+                pts2.G[i].next=pts2.G[i+1];
+           }
+           else{
+                pts2.G[i].nextnum=0;
+                pts2.G[i].next=pts2.G[i+1];
+           }
+        }
+        
+        
         Plist[num]=pts1;
         Plist[PlistNum]=pts2;
         PlistNum++;
+        //println(pts1.nv);
+        //println(pts2.nv);
         
   }
-    
+  
+
   boolean checkarrow(pt[] XG, int XGnum,pt A,pt B){
         pt tempa;
         pt tempb;
@@ -448,18 +499,29 @@ class pts
         }
         int leftside=0;
         int rightside=0;
+ 
         for(int i=0;i<XGnum;i++){
+            //println("xgnum"+XGnum);
             if(XG[i].x>tempa.x && XG[i].x<tempb.x){
+              println("run0");
                 return false;
             }
             if(XG[i].x<tempa.x){
-                leftside++;
+    
+                leftside=leftside+1;
+
             }
             if(XG[i].x>tempb.x){
-                rightside++;
+            
+                rightside=rightside+1;
+              
             }
+
         }
+  
         if(leftside%2==0 || rightside%2==0){
+          //println("left:"+leftside);
+          //println("right:"+rightside);
             return false;
         }
           return true;

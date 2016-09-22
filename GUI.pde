@@ -123,7 +123,7 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
        } 
   
     change=true; // to make sure that we save a movie frame each time something changes
-    println("key pressed = "+key);
+    //println("key pressed = "+key);
 
     }
 
@@ -150,7 +150,7 @@ void mouseReleased()   // executed when the mouse is pressed
   A.setTo(0,0);
   B.setTo(0,0);
   }
-  println("currentpts"+currentpts);
+  //println("currentpts"+currentpts);
   change=true;    
   }
 
@@ -159,7 +159,8 @@ void mouseDragged() // executed when the mouse is dragged (while mouse buttom pr
   if (!keyPressed || (key=='a')|| (key=='i')) P.dragPicked();   // drag selected point with mouse
   if (keyPressed) {
       if (key=='.' && state==0) f+=2.*float(mouseX-pmouseX)/width;  // adjust current frame   
-      if (key=='t' ) P.dragAll(); // move all vertices
+      if (key=='t' ) {P.dragAll();} // move all vertices
+      if (key=='t' && state==2) {Plist[closestpts].dragAll();}
       if (key=='r' && state==0) P.rotateAllAroundCentroid(Mouse(),Pmouse()); // turn all vertices around their center of mass
       if (key=='z' && state==0) P.scaleAllAroundCentroid(Mouse(),Pmouse()); // scale all vertices with respect to their center of mass
       }
@@ -174,7 +175,7 @@ void mouseWheel(MouseEvent event) { // reads mouse wheel and uses to zoom
   }
 
 //**************************** text for name, title and help  ****************************
-String title ="Split Polygon Puzzle",            name ="Student: First LAST",
+String title ="Split Polygon Puzzle stage:"+state,            name ="Student: First LAST",
        subtitle = "  base code for P2 for Jarek Rossignac's CS3451 class in the Fall 2016",
        
        menu="?:(show/hide) help, ~/!/@:snap pdf/jpg/fif, `:(start/stop) recording, S/L:save/load, Q:quit",

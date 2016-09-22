@@ -5,14 +5,16 @@ import processing.pdf.*;    // to save screen shots as PDFs, does not always wor
 //**************************** global variables ****************************
 pts P = new pts(); // class containing array of points, used to standardize GUI
 pts[] Plist = new pts [99999];
-int currentpts;
-int PlistNum=0;
+pts[] shadow = new pts [99999];
+int currentpts=0; int PlistNum=0;
 float t=0, f=0;
 boolean animate=true, fill=false, timing=false;
 boolean lerp=true, slerp=true, spiral=true; // toggles to display vector interpoations
 int ms=0, me=0; // milli seconds start and end for timing
 int npts=20000; // number of points
 int state=0;       //0 creat pattern(move points insert points) 1 cut 2 move new patterns 3 game
+boolean cancut;
+int closestpts=0;
 pt A=P(100,100), B=P(300,300);
 //**************************** initialization ****************************
 void setup()               // executed once at the begining 
@@ -38,23 +40,52 @@ void draw()      // executed at each frame
         PlistNum=1;
     }
     if(state == 1){
+      title ="Split Polygon Puzzle stage:"+state;
+      //println(PlistNum);
+      cancut=false;
       for(int i=0;i<PlistNum;i++){
             pen(black,3); 
             fill(yellow); 
             if(Plist[i]!=null){
                 Plist[i].drawCurve(); 
-                Plist[i].IDs(); // shows polyloop with vertex labels
+                //Plist[i].IDs(); // shows polyloop with vertex labels
                 boolean goodSplit = Plist[i].splityBy(A,B,i);
-                if(goodSplit){pen(green,5);
-                currentpts=i;
-                }
-                else{pen(red,7); }
+                if(goodSplit){
+                  currentpts=i;
+                  cancut=true;
+                
+              }
+              if(cancut){pen(green,5);}
+              else{pen(red,7); }
+                
                 arrow(A,B);            // defines line style wiht (5) and color (green) and draws starting arrow from A to B
             }
         }
-        
-      
-    }       
+      for(int i=0;i<PlistNum;i++){
+          shadow[i]=Plist[i];
+      }
+    }
+    if(state == 2){
+      title ="Split Polygon Puzzle stage:"+state;
+      //println(Mouse().x);
+      closestpts=0;
+      pt closestc= Plist[0].Centroid();
+      float closed=d2(Mouse(),closestc);
+      for(int i=0;i<PlistNum;i++){
+            pen(black,3); 
+            fill(yellow); 
+            if(Plist[i]!=null){
+                Plist[i].drawCurve();
+                if(  d2(Mouse(),Plist[i].Centroid())< closed  ){
+                    closed=d2(Mouse(),Plist[i].Centroid());
+                    closestpts=i;
+                }
+            }
+            pen(black,1);
+            if(shadow[i]!=null){shadow[i].drawCurve();}
+      }
+      println("i"+closestpts);
+    }
   
   
   if(recordingPDF) endRecordingPDF();  // end saving a .pdf file with the image of the canvas
